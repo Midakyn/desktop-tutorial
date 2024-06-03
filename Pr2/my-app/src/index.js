@@ -12,7 +12,7 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 400,
-    icon: __dirname + "/images.jpg",
+    icon: __dirname + "/images.png",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
@@ -38,7 +38,7 @@ const createWindow = () => {
   });
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished
