@@ -1,5 +1,6 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('node:path');
+const os = require('os-utils');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -9,15 +10,24 @@ if (require('electron-squirrel-startup')) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 400,
+    icon: __dirname + "/images.jpg",
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-    },
+      preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: true,
+    }
   });
 
-  // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
+  // Load the index.html of the app.
+  mainWindow.loadFile(path.join(__dirname, "index.html"));
+
+  os.cpuUsage(function (v) {
+    console.log("CPU Usage (%): " + v * 100);
+    console.log("Mem Usage (%): " + os.freememPercentage() * 100);
+    console.log("Total Mem (GB): " + os.totalmem() / 1024);
+    console.log('Platform :', os.platform());
+  });
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
@@ -47,5 +57,12 @@ app.on('window-all-closed', () => {
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+os.cpuUsage(function(v) {
+  console.log("CPU Usage (%): "+v*100);
+  mainWindow.webContents.send("cpu", v * 100);
+  console.log("Mem Usage (%): "+os.freememProcentage() *100);
+  mainWindow.webContents.send("mem", os.freememPercentage() * 100);
+  console.log("Total Mem (GB): "+os.totalmem() /1024);
+  mainWindow.webContents.send("total-mem", os.totalmem() / 1024);
+  });
+  
